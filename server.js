@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { Client } = require('pg');
 
 const app = express();
 const port = 5000;
@@ -10,24 +11,56 @@ const port = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-const baseFolder = 'D:/practicSharov/fsApp/dataFile';
+// Подключение к PostgreSQL
+const client = new Client({
+  user: '',
+  host: '',
+  database: '',
+  password: '',
+  port: 5432,
+});
 
-if (!fs.existsSync(baseFolder)) {
-  console.error('Папка не существует:', baseFolder);
-  process.exit(1); 
+client.connect();
+
+let baseFolder = '';
+
+app.post('/set-folder', (req, res) => {
+  const { folderPath } = req.body;
+
+  if (!fs.existsSync(folderPath)) {
+    return res.status(400).send('Папка не существует');
+  }
+
+  baseFolder = folderPath;
+  res.send('Базовая папка установлена');
+});
+
+async function logAction(userId, actionType, filePath, additionalData = null) {
+  const query = {
+    text: 'INSERT INTO user_actions(user_id, action_type, file_path, additional_data) VALUES($1, $2, $3, $4)',
+    values: [userId, actionType, filePath, additionalData],
+  };
+
+  try {
+    await client.query(query);
+    console.log('Действие записано в лог');
+  } catch (err) {
+    console.error('Ошибка записи в лог:', err);
+  }
 }
 
 app.get('/files', (req, res) => {
+  if (!baseFolder) {
+    return res.status(400).send('Базовая папка не установлена');
+  }
+
   fs.readdir(baseFolder, (err, files) => {
     if (err) {
       console.error('Ошибка чтения папки:', err);
       return res.status(500).send('Ошибка чтения папки');
     }
-    
-    const fileList = files.filter(file => {
-      return fs.statSync(path.join(baseFolder, file)).isFile();
-    });
-    
+
+    const fileList = files.filter(file => fs.statSync(path.join(baseFolder, file)).isFile());
     res.json(fileList);
   });
 });
