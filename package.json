@@ -1,0 +1,16 @@
+{
+  "name": "fsapp",
+  "version": "1.0.0",
+  "description": "server work to FileSystem",
+  "main": "server.js",
+  "scripts": {
+    "test": "start",
+    "start": "node server.js"
+  },
+  "author": "Vorashi",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
