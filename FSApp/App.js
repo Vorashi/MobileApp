@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.100:5000';
+const API_URL = 'http://localhost:5000';
 
 const App = () => {
   const [folderPath, setFolderPath] = useState('');

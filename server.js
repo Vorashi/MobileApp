@@ -4,6 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Client } = require('pg');
+require('dotenv').config();
 
 const app = express();
 const port = 5000;
@@ -11,13 +12,12 @@ const port = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Подключение к PostgreSQL
 const client = new Client({
-  user: '',
-  host: '',
-  database: '',
-  password: '',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 client.connect();
