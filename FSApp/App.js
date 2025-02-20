@@ -63,6 +63,7 @@ const App = () => {
         value={filename}
         onChangeText={setFilename}
       />
+     
       <TextInput
         style={styles.input}
         placeholder="Содержимое файла"
